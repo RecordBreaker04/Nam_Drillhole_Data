@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Namibia Drillhole Data Portal - Geological Survey Namibia</title>
+    <link rel="shortcut icon" type="image/png" href="images/gsn_logo.png">
+    
+    <!-- External libraries -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-measure@3.1.0/dist/leaflet-measure.css" />
+    
+    <!-- External CSS file -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="/static/img/Ministry-of-Industries,Mines-and-Energy.png" alt="Ministry of Industries,Mines and Energy" class="logo">
+            <div class="header-title">Namibia Drillhole Data Portal</div>
+           <img src="/static/img/namibia-geo-survey.png" alt="Geological Survey of Namibia Logo" class="logo">
+        </div>
+        <div class="header-controls">
+            <button id="registerButton"><i class="fas fa-user-plus"></i> Register</button>
+            <button id="helpButton"><i class="fas fa-question-circle"></i> Help</button>
+            <button id="contactButton"><i class="fas fa-envelope"></i> Contact</button>
+            <button id="loginButton"><i class="fas fa-user"></i> Login</button>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div class="sidebar" id="sidebar">
+            <details open class="category">
+                <summary>Mineral Groups</summary>
+                <div class="category-content">
+                    <div class="layer-control">
+                        <label class="layer-label">
+                            <input type="checkbox" id="toggleBaseMetals" checked>
+                            <svg width="16" height="16">
+                                <circle cx="8" cy="8" r="8" fill="#fff" />
+                                <circle cx="8" cy="8" r="6" fill="#1f78b4" />
+                            </svg>
+                            <span>Base Metals</span>
+                        </label>
+                        <i class="fas fa-info-circle" title="Show details"></i>
+                    </div>
+                    <div class="layer-control">
+                        <label class="layer-label">
+                            <input type="checkbox" id="toggleBaseMetalsPreciousMetals" checked>
+                            <svg width="16" height="16">
+                                <circle cx="8" cy="8" r="8" fill="#fff" />
+                                <circle cx="8" cy="8" r="6" fill="#a6cee3" />
+                            </svg>
+                            <span>Base Metals & Precious Metals</span>
+                        </label>
+                        <i class="fas fa-info-circle" title="Show details"></i>
+                    </div>
+                    <div class="layer-control">
+                        <label class="layer-label">
+                            <input type="checkbox" id="toggleBasePreciousDimensionIndustrial" checked>
+                            <svg width="16" height="16">
+                                <circle cx="8" cy="8" r="8" fill="#fff" />
+                                <circle cx="8" cy="8" r="6" fill="#b2df8a" />
+                            </svg>
+                            <span>Base, Precious, Dimension & Industrial</span>
+                        </label>
+                        <i class="fas fa-info-circle" title="Show details"></i>
+                    </div>
+                    <div class="layer-control">
+                        <label class="layer-label">
+                            <input type="checkbox" id="toggleFossilFuels" checked>
+                            <svg width="16" height="16">
+                                <circle cx="8" cy="8" r="8" fill="#fff" />
+                                <circle cx="8" cy="8" r="6" fill="#000000" />
+                            </svg>
+                            <span>Fossil Fuels</span>
+                        </label>
+                        <i class="fas fa-info-circle" title="Show details"></i>
+                    </div>
+                    <div class="layer-control">
+                        <label class="layer-label">
+                            <input type="checkbox" id="toggleIndustrialMinerals" checked>
+                            <svg width="16" height="16">
+                                <circle cx="8" cy="8" r="8" fill="#000000" />
+                                <circle cx="8" cy="8" r="7" fill="#ffb200" />
+                            </svg>
+                            <span>Industrial Minerals</span>
+                        </label>
+                        <i class="fas fa-info-circle" title="Show details"></i>
+                    </div>
+                    <div class="layer-control">
+                        <label class="layer-label">
+                            <input type="checkbox" id="toggleNuclearFuels" checked>
+                            <svg width="16" height="16">
+                                <circle cx="8" cy="8" r="6" fill="#000000" />
+                                <circle cx="8" cy="8" r="5" fill="#f45b1d" />
+                            </svg>
+                            <span>Nuclear Fuels</span>
+                        </label>
+                        <i class="fas fa-info-circle" title="Show details"></i>
+                    </div>
+                    <div class="layer-control">
+                        <label class="layer-label">
+                            <input type="checkbox" id="togglePreciousStones" checked>
+                            <svg width="16" height="16">
+                                <circle cx="8" cy="8" r="8" fill="#fff" />
+                                <circle cx="8" cy="8" r="6" fill="#e31a1c" />
+                            </svg>
+                            <span>Precious Stones</span>
+                        </label>
+                        <i class="fas fa-info-circle" title="Show details"></i>
+                    </div>
+                    <div class="layer-control">
+                        <label class="layer-label">
+                            <input type="checkbox" id="togglePreciousMetals" checked>
+                            <svg width="16" height="16">
+                                <circle cx="8" cy="8" r="8" fill="#fff" />
+                                <circle cx="8" cy="8" r="6" fill="#fdbf6f" />
+                            </svg>
+                            <span>Precious Metals</span>
+                        </label>
+                        <i class="fas fa-info-circle" title="Show details"></i>
+                    </div>
+                </div>
+            </details>
+            <details class="category">
+                <summary>Regional and National Boundaries</summary>
+                <div class="category-content">
+                    <div class="layer-control">
+                        <label class="layer-label">
+                            <input type="checkbox" id="toggleRoads" data-layer="roads">
+                            <svg width="16" height="16">
+                                <rect width="16" height="16" fill="#fff" />
+                                <rect x="2" y="7" width="12" height="2" fill="#ff0000" />
+                            </svg>
+                            <span>Roads</span>
+                        </label>
+                        <i class="fas fa-info-circle" title="Show details"></i>
+                    </div>
+                    <div class="layer-control">
+                        <label class="layer-label">
+                            <input type="checkbox" id="toggleTownsAndVillages" data-layer="towns_villages">
+                            <svg width="16" height="16">
+                                <circle cx="8" cy="8" r="8" fill="#fff" />
+                                <circle cx="8" cy="8" r="5" fill="#00ff00" />
+                            </svg>
+                            <span>Towns and Villages</span>
+                        </label>
+                        <i class="fas fa-info-circle" title="Show details"></i>
+                    </div>
+                    <div class="layer-control">
+                        <label class="layer-label">
+                            <input type="checkbox" id="toggleRegions" data-layer="regions">
+                            <svg width="16" height="16">
+                                <rect width="16" height="16" fill="#f0f0f0" />
+                                <rect width="16" height="16" fill="none" stroke="#888888" stroke-width="2" />
+                            </svg>
+                            <span>Regions</span>
+                        </label>
+                        <i class="fas fa-info-circle" title="Show details"></i>
+                    </div>
+                    <div class="layer-control">
+                        <label class="layer-label">
+                            <input type="checkbox" id="toggleDistricts" data-layer="districts">
+                            <svg width="16" height="16">
+                                <rect width="16" height="16" fill="#f8f8f8" />
+                                <rect width="16" height="16" fill="none" stroke="#666666" stroke-width="1" />
+                            </svg>
+                            <span>Districts</span>
+                        </label>
+                        <i class="fas fa-info-circle" title="Show details"></i>
+                    </div>
+                    <div class="layer-control">
+                        <label class="layer-label">
+                            <input type="checkbox" id="toggleCountry" data-layer="country">
+                            <svg width="16" height="16">
+                                <rect width="16" height="16" fill="#ffffff" />
+                                <rect width="16" height="16" fill="none" stroke="#000000" stroke-width="3" />
+                            </svg>
+                            <span>Country</span>
+                        </label>
+                        <i class="fas fa-info-circle" title="Show details"></i>
+                    </div>
+                </div>
+            </details>
+            <details class="category">
+                <summary>Farm Data</summary>
+                <div class="category-content">
+                    <div class="layer-control">
+                        <label class="layer-label">
+                            <input type="checkbox" id="toggleFarms" data-layer="farms">
+                            <svg width="16" height="16">
+                                <rect width="16" height="16" fill="#DEB887" />
+                                <rect width="16" height="16" fill="none" stroke="#8B4513" stroke-width="1" />
+                            </svg>
+                            <span>Farms</span>
+                        </label>
+                        <i class="fas fa-info-circle" title="Show details"></i>
+                    </div>
+                </div>
+            </details>
+        </div>
+
+        <div class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+
+        <div class="main-content">
+            <div class="tab-bar">
+                <button class="active" data-tab="map">Map Viewer</button>
+                <button data-tab="drillholeData">Drillhole Data</button>
+                <button data-tab="mapTools">Map Tools</button>
+                <button data-tab="metadata">Metadata</button>
+            </div>
+            
+            <div class="tab-content active" id="map-tab">
+                <div id="map"></div>
+                
+                <!-- Collapsible Search Box -->
+                <div class="search-box" id="searchBox">
+                    <div class="search-toggle" id="searchToggle">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="search-content" id="searchContent">
+                        <div class="search-tabs">
+                            <div class="search-tab active" data-tab="place">Place Search</div>
+                            <div class="search-tab" data-tab="coordinates">Coordinates</div>
+                        </div>
+                        
+                        <div class="search-panel active" id="place-search">
+                            <input type="text" id="searchInput" placeholder="Search places in Namibia...">
+                            <button class="search-button" id="searchButton">Search</button>
+                            <div class="search-results" id="searchResults"></div>
+                        </div>
+                        
+                        <div class="search-panel" id="coordinates-search">
+                            <input type="text" id="latitudeInput" placeholder="Latitude (e.g., -22.5600)">
+                            <input type="text" id="longitudeInput" placeholder="Longitude (e.g., 17.0800)">
+                            <button class="search-button" id="goToCoordinates">Go to Location</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Compact Map Controls -->
+                <div class="map-controls" id="mapControls">
+                    <div class="map-controls-row">
+                        <button class="map-control-button" id="zoomIn" title="Zoom in">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <button class="map-control-button" id="zoomOut" title="Zoom out">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button class="map-control-button" id="fullExtent" title="Full extent">
+                            <i class="fas fa-globe"></i>
+                        </button>
+                        <button class="map-control-button" id="findMyLocation" title="Find my location">
+                            <i class="fas fa-location-arrow"></i>
+                        </button>
+                    </div>
+                    <div class="map-controls-row">
+                        <button class="map-control-button" id="selectByPoint" title="Select by point">
+                            <i class="fas fa-mouse-pointer"></i>
+                        </button>
+                        <button class="map-control-button" id="selectByPolygon" title="Select by polygon">
+                            <i class="fas fa-draw-polygon"></i>
+                        </button>
+                        <button class="map-control-button" id="measureTool" title="Measure distance">
+                            <i class="fas fa-ruler"></i>
+                        </button>
+                        <button class="map-control-button" id="drawPolygon" title="Draw polygon">
+                            <i class="fas fa-draw-polygon"></i>
+                        </button>
+                    </div>
+                    <div class="map-controls-row">
+                        <button class="map-control-button" id="drawPolyline" title="Draw polyline">
+                            <i class="fas fa-road"></i>
+                        </button>
+                        <button class="map-control-button" id="clearMap" title="Clear map">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Compact Basemap Selector -->
+                <div class="basemap-selector" id="basemapSelector">
+                    <div class="basemap-toggle" id="basemapToggle">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <div class="basemap-content" id="basemapContent">
+                        <div class="basemap-option active" data-basemap="osm">OpenStreetMap</div>
+                        <div class="basemap-option" data-basemap="satellite">Satellite</div>
+                        <div class="basemap-option" data-basemap="terrain">Terrain</div>
+                    </div>
+                </div>
+                
+                <!-- Dynamic Legend - Only shows when layers are selected -->
+                <div class="legend" id="legend" style="display: none;">
+                    <div class="legend-header">
+                        <h4>Legend</h4>
+                        <button class="legend-toggle" id="legendToggle">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                    <div class="legend-content" id="legendContent"></div>
+                </div>
+                
+                <div class="coordinates-marker" id="coordinatesMarker">
+                    Lat: 0.0000, Lng: 0.0000
+                </div>
+                
+                <div class="measurement-result" id="measurementResult"></div>
+            </div>
+            
+            <div class="tab-content" id="drillholeData-tab">
+                <div class="data-toolbar">
+                    <button id="exportExcel"><i class="fas fa-file-excel"></i> Export to Excel</button>
+                    <button id="exportCSV"><i class="fas fa-file-csv"></i> Export to CSV</button>
+                    <button id="exportMining"><i class="fas fa-file-export"></i> Export Mining Format</button>
+                    <button id="refreshData"><i class="fas fa-sync"></i> Refresh</button>
+                </div>
+                <div class="data-container">
+                    <div class="query-panel">
+                        <h3>Query Drillhole Data</h3>
+                        <div class="query-field">
+                            <label for="queryBoreholeNumber">Borehole Number</label>
+                            <input type="text" id="queryBoreholeNumber" placeholder="Enter borehole number">
+                        </div>
+                        <div class="query-field">
+                            <label for="queryProject">Project</label>
+                            <input type="text" id="queryProject" placeholder="Enter project name">
+                        </div>
+                        <div class="query-field">
+                            <label for="queryEPL">EPL</label>
+                            <input type="text" id="queryEPL" placeholder="Enter EPL">
+                        </div>
+                        <div class="query-field">
+                            <label for="queryCompany">Company</label>
+                            <input type="text" id="queryCompany" placeholder="Enter company name">
+                        </div>
+                        <div class="query-field">
+                            <label for="queryMineralGroup">Mineral Group</label>
+                            <select id="queryMineralGroup">
+                                <option value="">All Groups</option>
+                                <option value="Base Metals">Base Metals</option>
+                                <option value="Base Metals & Precious Metals">Base Metals & Precious Metals</option>
+                                <option value="Base, Precious, Dimension & Industrial">Base, Precious, Dimension & Industrial</option>
+                                <option value="Fossil Fuels">Fossil Fuels</option>
+                                <option value="Industrial Minerals">Industrial Minerals</option>
+                                <option value="Nuclear Fuels">Nuclear Fuels</option>
+                                <option value="Precious Stones">Precious Stones</option>
+                                <option value="Precious Metals">Precious Metals</option>
+                            </select>
+                        </div>
+                        <div class="query-actions">
+                            <button class="btn-query" id="executeQuery">Query</button>
+                            <button class="btn-clear" id="clearQuery">Clear</button>
+                        </div>
+                    </div>
+                    <div class="results-panel">
+                        <h3>Query Results</h3>
+                        <div class="table-container">
+                            <table class="results-table">
+                                <thead>
+                                    <tr>
+                                        <th>Borehole Number</th>
+                                        <th>Project</th>
+                                        <th>EPL</th>
+                                        <th>Longitude</th>
+                                        <th>Latitude</th>
+                                        <th>Location Accuracy</th>
+                                        <th>1:250 000 Map Sheet</th>
+                                        <th>Company</th>
+                                        <th>Mineral Groups</th>
+                                        <th>Commodity</th>
+                                        <th>Exploration Target</th>
+                                        <th>Purpose</th>
+                                        <th>Coreshed Availability</th>
+                                        <th>Project Region</th>
+                                        <th>Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resultsBody">
+                                    <tr>
+                                        <td colspan="15" style="text-align: center;">Execute a query to see results</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="mapTools-tab">
+                <div class="tool-grid">
+                    <div class="tool-card">
+                        <i class="fas fa-ruler-combined"></i>
+                        <h4>Measurement Tools</h4>
+                        <p>Measure distances and areas on the map</p>
+                        <button class="tool-button" id="activateMeasurement">Activate</button>
+                    </div>
+                    <div class="tool-card">
+                        <i class="fas fa-draw-polygon"></i>
+                        <h4>Drawing Tools</h4>
+                        <p>Draw polygons, lines and points on the map</p>
+                        <button class="tool-button" id="activateDrawing">Activate</button>
+                    </div>
+                    <div class="tool-card">
+                        <i class="fas fa-layer-group"></i>
+                        <h4>Layer Management</h4>
+                        <p>Manage map layers and overlay options</p>
+                        <button class="tool-button" id="activateLayerManager">Open</button>
+                    </div>
+                    <div class="tool-card">
+                        <i class="fas fa-search-plus"></i>
+                        <h4>Advanced Search</h4>
+                        <p>Search by attributes and spatial criteria</p>
+                        <button class="tool-button" id="activateAdvancedSearch">Open</button>
+                    </div>
+                    <div class="tool-card">
+                        <i class="fas fa-download"></i>
+                        <h4>Export Map</h4>
+                        <p>Export the current map view as image or PDF</p>
+                        <button class="tool-button" id="activateExport">Export</button>
+                    </div>
+                    <div class="tool-card">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <h4>Spatial Bookmarks</h4>
+                        <p>Save and manage favorite map locations</p>
+                        <button class="tool-button" id="activateBookmarks">Manage</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="metadata-tab">
+                <div class="metadata-container">
+                    <div class="metadata-section">
+                        <h3>Dataset Identification</h3>
+                        <table class="metadata-table">
+                            <tr><th>Title</th><td>Namibia Drillhole Database</td></tr>
+                            <tr><th>Originator</th><td>Geological Survey of Namibia</td></tr>
+                            <tr><th>Publication Date</th><td>2025</td></tr>
+                            <tr><th>Edition</th><td>2.0</td></tr>
+                            <tr><th>Abstract</th><td>Comprehensive database of drillhole information across Namibia, including location, geology, and mineralogy data</td></tr>
+                            <tr><th>Purpose</th><td>To provide access to drillhole data for mineral exploration and research</td></tr>
+                        </table>
+                    </div>
+                    
+                    <div class="metadata-section">
+                        <h3>Spatial Reference</h3>
+                        <table class="metadata-table">
+                            <tr><th>Coordinate System</th><td>WGS 1984 UTM Zone 33S</td></tr>
+                            <tr><th>EPSG Code</th><td>32733</td></tr>
+                            <tr><th>Bounding Coordinates</th>
+                                <td>
+                                    <strong>West:</strong> 11.747095°E<br>
+                                    <strong>East:</strong> 25.264435°E<br>
+                                    <strong>North:</strong> -16.956243°S<br>
+                                    <strong>South:</strong> -28.965186°S
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div class="metadata-section">
+                        <h3>Attributes</h3>
+                        <table class="metadata-table">
+                            <thead>
+                                <tr>
+                                    <th>Attribute</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Borehole Number</td><td>String</td><td>Unique identifier for the borehole</td></tr>
+                                <tr><td>Project</td><td>String</td><td>Project name associated with the borehole</td></tr>
+                                <tr><td>EPL</td><td>String</td><td>Exclusive Prospecting License number</td></tr>
+                                <tr><td>Longitude</td><td>Decimal</td><td>Longitude coordinate (WGS84)</td></tr>
+                                <tr><td>Latitude</td><td>Decimal</td><td>Latitude coordinate (WGS84)</td></tr>
+                                <tr><td>Location Accuracy</td><td>String</td><td>Accuracy of the location data</td></tr>
+                                <tr><td>1:250 000 Map Sheet</td><td>String</td><td>Map sheet reference</td></tr>
+                                <tr><td>Company</td><td>String</td><td>Company that drilled the borehole</td></tr>
+                                <tr><td>Mineral Groups</td><td>String</td><td>Primary mineral groups</td></tr>
+                                <tr><td>Commodity</td><td>String</td><td>Primary commodity targeted</td></tr>
+                                <tr><td>Exploration Target</td><td>String</td><td>Type of exploration target</td></tr>
+                                <tr><td>Purpose</td><td>String</td><td>Purpose of drilling</td></tr>
+                                <tr><td>Coreshed Availability</td><td>String</td><td>Availability of core shed</td></tr>
+                                <tr><td>Project Region</td><td>String</td><td>Region where project is located</td></tr>
+                                <tr><td>Type</td><td>String</td><td>Type of drilling</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Welcome Modal -->
+    <div class="modal welcome-modal" id="welcomeModal">
+        <div class="modal-content welcome-content">
+            <div class="welcome-header">
+                <img src="/static/img/Ministry-of-Industries,Mines-and-Energy.png" alt="Ministry of Industries,Mines and Energy" class="logo">
+                <h1>Welcome to Namibia Drillhole Data Portal</h1>
+                <img src="/static/img/namibia-geo-survey.png" alt="Geological Survey of Namibia Logo" class="logo">
+            </div>
+            <div class="welcome-body">
+                <p>Explore and analyze drilling data with ease, developed by the Geological Survey of Namibia.</p>
+                <div class="welcome-features">
+                    <div class="feature">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <span>Interactive Maps</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Multiple Data Layers</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-search"></i>
+                        <span>Advanced Search</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-database"></i>
+                        <span>Drillhole Data</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-tools"></i>
+                        <span>Map Tools</span>
+                    </div>
+                </div>
+            </div>
+            <div class="welcome-footer">
+                <button class="welcome-button" id="getStartedButton">Get Started</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Form Modal -->
+    <div class="modal" id="contactModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Contact the Geological Survey of Namibia</div>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="contactName">Name</label>
+                    <input type="text" id="contactName" required>
+                </div>
+                <div class="form-group">
+                    <label for="contactEmail">Email</label>
+                    <input type="email" id="contactEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="contactSubject">Subject</label>
+                    <input type="text" id="contactSubject" required>
+                </div>
+                <div class="form-group">
+                    <label for="contactMessage">Message</label>
+                    <textarea id="contactMessage" required></textarea>
+                </div>
+                <button type="submit" class="submit-button">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="modal" id="helpModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Help & Documentation</div>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="form-group">
+                <h3>Using the Drillhole Data Portal</h3>
+                <p><strong>Map Viewer:</strong> Explore drillhole locations and toggle different mineral group layers.</p>
+                <p><strong>Drillhole Data:</strong> Query the database using various filters and export results.</p>
+                <p><strong>Map Tools:</strong> Access specialized tools for map interaction and analysis.</p>
+                <p><strong>Search:</strong> Find locations by name or coordinates.</p>
+                
+                <h3>Need More Help?</h3>
+                <p>Contact the Geological Survey of Namibia for additional support:</p>
+                <p>Email: info@gsn.gov.na<br>Phone: +264 61 xxxxxx</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal login-modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Login to Drillhole Data Portal</div>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required>
+                </div>
+                <div class="form-group">
+                    <label>Select Role</label>
+                    <div class="user-role">
+                        <div class="role-btn" data-role="viewer">Viewer</div>
+                        <div class="role-btn active" data-role="analyst">Analyst</div>
+                        <div class="role-btn" data-role="dataentry">Data Entry</div>
+                        <div class="role-btn" data-role="admin">Admin</div>
+                    </div>
+                </div>
+                <button type="submit" class="submit-button">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Registration Modal -->
+    <div class="modal login-modal" id="registerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Register for Drillhole Data Portal</div>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="regName">Full Name</label>
+                    <input type="text" id="regName" required>
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">Email</label>
+                    <input type="email" id="regEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="regOrganization">Organization</label>
+                    <input type="text" id="regOrganization" required>
+                </div>
+                <div class="form-group">
+                    <label for="regUsername">Username</label>
+                    <input type="text" id="regUsername" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Password</label>
+                    <input type="password" id="regPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="regConfirmPassword">Confirm Password</label>
+                    <input type="password" id="regConfirmPassword" required>
+                </div>
+                <button type="submit" class="submit-button">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- External JavaScript libraries -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+    <script src="https://unpkg.com/esri-leaflet@3.0.8/dist/esri-leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-measure@3.1.0/dist/leaflet-measure.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    
+    <!-- Main application JavaScript -->
+    <script src="main.js"></script>
+</body>
+</html>
